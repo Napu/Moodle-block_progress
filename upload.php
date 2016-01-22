@@ -32,11 +32,13 @@ require_once($CFG->dirroot.'/blocks/progress/lib.php');
 require_once($CFG->libdir.'/tablelib.php');
 require_once("$CFG->libdir/formslib.php");
 require_once($CFG->dirroot.'/blocks/progress/upload_form.php');
+require_once ($CFG->dirroot . '/lib/excellib.class.php');
 
 // Gather form data.
 $progressbarid = required_param('progressbarid', PARAM_INT);
 $courseid = required_param('courseid', PARAM_INT);
 $action = optional_param('action','form', PARAM_TEXT);
+$csv = optional_param('csv',0, PARAM_INT);
 
 // Determine course and context.
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
@@ -70,6 +72,10 @@ require_capability('block/progress:overview', $progressblockcontext);
 //redirect url for form cancelation
 $url = new moodle_url('/course/view.php', array('id'=>$courseid));
 
+
+if($csv==1){
+	block_progress_csv_example();
+}
 // Start page output.
 echo $OUTPUT->header();
 
@@ -151,8 +157,15 @@ if ($mform->is_cancelled()) {
 	echo $OUTPUT->footer();
 }
 
+
+//Button that downloads the csv file with the example to upload
+$csvparameters=array('progressbarid' => $progessbarid, 'courseid'=>$courseid, 'csv'=>1);
+$csvurl = new moodle_url('/blocks/progress/upload.php', $csvparameters);
+echo $OUTPUT->single_button($csvurl, "bajar ejemplo", 'post');
+
 echo $OUTPUT->heading(get_string('testform', 'block_progress'));
 
 // Form display
 $mform -> display();
+
 echo $OUTPUT->footer();

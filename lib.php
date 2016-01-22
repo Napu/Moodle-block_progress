@@ -1563,3 +1563,21 @@ function block_progress_download_excel($courseid,$coursename, $users){
 	}
 	$workbook->close ();
 }
+function block_progress_csv_example(){
+	$downloadfilename = clean_filename ( "csvexample.csv" );
+	// Creating a workbook
+	$workbook = new MoodleExcelWorkbook ( "-" );
+	// Sending HTTP headers
+	$workbook->send ( $downloadfilename );
+	// Adding the worksheet
+	$myxls = $workbook->add_worksheet ( $coursename );
+	
+	$myxls ->write_string(0,0, "rut");
+	$myxls ->write_string(0,1, "test_time");
+	$myxls ->write_string(0,2, "room");
+	$myxls ->write_string(0,3, "test_name");
+	$myxls ->write_string(0,4, "modulo");
+	
+	$workbook->close ();
+	
+}

@@ -45,11 +45,6 @@ $progressconfig = unserialize(base64_decode($progressblock->configdata));
 $progressblockcontext = block_progress_get_block_context($id);
 
 
-
-
-
-
-
 // Set up page parameters.
 $PAGE->set_course($course);
 $PAGE->requires->css('/blocks/progress/styles.css');
