@@ -1564,19 +1564,20 @@ function block_progress_download_excel($courseid,$coursename, $users){
 	$workbook->close ();
 }
 function block_progress_csv_example(){
-	$downloadfilename = clean_filename ( "csvexample.xls" );
+	$filename = get_string('csvexample', 'block_progress');
+	$downloadfilename = clean_filename ( "$filename.xls" );
 	// Creating a workbook
 	$workbook = new MoodleExcelWorkbook ( "-" );
 	// Sending HTTP headers
 	$workbook->send ( $downloadfilename );
 	// Adding the worksheet
-	$myxls = $workbook->add_worksheet ( $coursename );
+	$myxls = $workbook->add_worksheet ( "csvexample" );
 	
-	$myxls ->write_string(0,0, "rut");
-	$myxls ->write_string(0,1, "test_time");
-	$myxls ->write_string(0,2, "room");
-	$myxls ->write_string(0,3, "test_name");
-	$myxls ->write_string(0,4, "modulo");
+	$myxls ->write_string(0,0, get_string('rut', 'bolck_progress'));
+	$myxls ->write_string(0,1, get_string('testtime', 'bolck_progress'));
+	$myxls ->write_string(0,2, get_string('room', 'bolck_progress'));
+	$myxls ->write_string(0,3, get_string('testname', 'bolck_progress'));
+	$myxls ->write_string(0,4, get_string('module', 'bolck_progress'));
 	
 	$workbook->close ();
 	
