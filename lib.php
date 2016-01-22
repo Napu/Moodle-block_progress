@@ -1564,7 +1564,7 @@ function block_progress_download_excel($courseid,$coursename, $users){
 	$workbook->close ();
 }
 function block_progress_csv_example(){
-	$downloadfilename = clean_filename ( "csvexample.csv" );
+	$downloadfilename = clean_filename ( "csvexample.xls" );
 	// Creating a workbook
 	$workbook = new MoodleExcelWorkbook ( "-" );
 	// Sending HTTP headers
