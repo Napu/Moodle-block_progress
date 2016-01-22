@@ -159,7 +159,7 @@ if ($mform->is_cancelled()) {
 
 
 //Button that downloads the csv file with the example to upload
-$csvparameters=array('progressbarid' => $progessbarid, 'courseid'=>$courseid, 'csv'=>1);
+$csvparameters=array('progressbarid' => $progressbarid, 'courseid'=>$courseid, 'csv'=>1);
 $csvurl = new moodle_url('/blocks/progress/upload.php', $csvparameters);
 echo $OUTPUT->single_button($csvurl, "bajar ejemplo", 'post');
 
