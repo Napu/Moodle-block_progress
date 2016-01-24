@@ -26,3 +26,15 @@ Once the Progress Bar is installed, you can use it in a course as follows.
 
 Hidden items will not appear in the Progress Bar until they are unhidden. This is useful for a
 scheduled release of activities.
+
+When the block is displayed and set up, for the manager there will be two buttons; "Add dates" and 
+ "Overview of students".
+ 
+ "Add dates": only magers can see it, there you will find a file picker for you to upload a CSV file
+ On this CSV file you can upload presential evaluation dates, so that students, non-editing teachers, teachers,
+ and managers, can see when and where they have to show themselfs. (The CSV example for uploading is there to download).
+ 
+ "Overview of students": Now there is a button at the bottom left part of the page, where you can download a 
+ file, with the sumarry of the quizzes and assigns, that the student has completed or not. This option is available 
+ for every role expet for students.
+ 

@@ -226,4 +226,5 @@ $string['rut'] = "Rut";
 $string['testtime'] = "Fecha de la evaluación";
 $string['room'] = "Sala";
 $string['testname'] = "Nombre de la evaluación";
-$string['period'] = "Módulo";
+$string['notesttoshow'] = "No hay prueba para mostrar";
+$string['uploadtestdate'] = "Subir evaluaciones";

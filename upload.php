@@ -121,6 +121,7 @@ if ($mform->is_cancelled()) {
 	}
 	
 	//Data input on data base
+	//$i var is used as a counter
 	for($i=1; $i<=$max; $i++){
 		//Separation
 		$dbinput= explode(";", $datas[$i]);
@@ -136,17 +137,19 @@ if ($mform->is_cancelled()) {
 		$date = explode("-", $dbinput[1]);
 		$date = $date[2]."-".$date[1]."-".$date[0];
 		$fecha = new DateTime($date);
+
+		//checks if there is a user with that id number
 		if ($userid == false) {
 			$url_error = new moodle_url('/blocks/progress/upload.php', array('courseid'=>$courseid, 'progressbarid'=>$progressbarid, 'action'=>$action));
 			echo $OUTPUT->heading(get_string('uploaderror', 'block_progress'));
-			$label = 'Back';
+			$label = get_string('back', 'block_progress');
 			echo $OUTPUT->single_button($url_error, $label, 'post');
 			echo $OUTPUT->footer();
 			die();
 		}else{
 			// Filling in object
 			$dataobject->userid = $userid->id;
-			$dataobject->test_time = $fecha->getTimestamp ();
+			$dataobject->test_time = $fecha->getTimestamp ()+86340;
 			$dataobject->room = $dbinput [2];
 			$dataobject->test_name = $dbinput [3];
 			$dataobject->modulo = $dbinput [4];
@@ -158,7 +161,7 @@ if ($mform->is_cancelled()) {
 	}
 	
 	echo $OUTPUT->heading(get_string('uploadsucces', 'block_progress'));
-	$label = 'Back';
+	$label = get_string('back', 'block_progress');
 	echo $OUTPUT->single_button($url, $label, 'post');
 	echo $OUTPUT->footer();
 }

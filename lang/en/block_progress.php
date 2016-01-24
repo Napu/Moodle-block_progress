@@ -227,3 +227,5 @@ $string['testtime'] = "Evaluation date";
 $string['room'] = "Room";
 $string['testname'] = "Evaluation name";
 $string['period'] = "Period";
+$string['notesttoshow'] = "No test to show";
+$string['uploadtestdate'] = "Upload test dates";

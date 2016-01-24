@@ -1437,8 +1437,10 @@ function block_progress_get_coursemodule($module, $recordid, $courseid, $userid 
  * @param int $courseid Course id
  * @return string Next test date
  */
-function block_progress_get_dates($courseid){
+function block_progress_get_dates($courseid, $context){
 	global $DB, $USER;
+	
+	// Looks for the very next test date
 	$sql = "
 	SELECT * 
 	FROM {block_progress}
@@ -1447,11 +1449,16 @@ function block_progress_get_dates($courseid){
 	LIMIT 1
 	";
 	$userdate = $DB -> get_record_sql($sql, array('id' =>$USER->id, 'date' => time(), 'courseid'=>$courseid));
+	
+	//checks for results, if there is any, show them
 	if(isset($userdate->test_name)){
-	return $userdate->test_name."<br>".date("d-m-Y",$userdate->test_time)."<br>".$userdate->modulo." ". $userdate->room;
+		return $userdate->test_name."<br>".date("d-m-Y",$userdate->test_time)."<br>".$userdate->modulo." ". $userdate->room;
 	}else{
-		// TODO: create lang fot this error
-		return " No hay pruebas para mostrar";
+		if(has_capability('block/progress:adddate', $context)){
+			return get_string('uploadtestdate', 'block_progress');
+		}else{
+			return get_string('notesttoshow', 'block_progress');
+		}
 	}
 
 }
@@ -1465,10 +1472,13 @@ function block_progress_download_excel($courseid,$coursename, $users){
 	global $DB;
 	
 	$downloadfilename = clean_filename ( "$coursename.xls" );
+	
 	// Creating a workbook
 	$workbook = new MoodleExcelWorkbook ( "-" );
+	
 	// Sending HTTP headers
 	$workbook->send ( $downloadfilename );
+	
 	// Adding the worksheet
 	$myxls = $workbook->add_worksheet ( $coursename );
 
@@ -1479,6 +1489,7 @@ function block_progress_download_excel($courseid,$coursename, $users){
 			join {quiz_grades} AS qg
 			ON (q.id=qg.quiz)
 			WHERE q.course=:courseid AND qg.userid=:userid";
+	
 	//sql to find the assigns from a certain user
 	$sql_assign="
 			SELECT a.id AS assignid, a.name, s.status, ag.grade 
@@ -1489,8 +1500,7 @@ function block_progress_download_excel($courseid,$coursename, $users){
 			ON a.id=s.assignment
 			WHERE a.course=:courseid AND s.userid=:userid";
 	
-	
-	//header
+	//header search
 	$sql_header_quiz="
 			SELECT id, name
 			FROM {quiz}
@@ -1503,6 +1513,8 @@ function block_progress_download_excel($courseid,$coursename, $users){
 	$quiz_headers=$DB->get_records_sql($sql_header_quiz, array('courseid'=>$courseid));
 	$assign_headers=$DB->get_records_sql($sql_header_assign, array('courseid'=>$courseid));
 	$headers[]="Name";
+	
+	//Setting header arrays by quiz or assign
 	foreach($quiz_headers as $quiz_header){
 		$headers[]=$quiz_header->name." grade";
 	}
@@ -1510,7 +1522,8 @@ function block_progress_download_excel($courseid,$coursename, $users){
 		$headers[]=$assign_header->name." Status";
 		$headers[]=$assign_header->name." grade";
 	}
-	//gtting header written in excel
+	
+	//getting header written in excel
 	$row=0;
 	$col=0;
 	foreach ( $headers  as $header ) {
@@ -1518,8 +1531,10 @@ function block_progress_download_excel($courseid,$coursename, $users){
 		$col ++;
 	}
 	$row=1;
-	//loop to inseter every user that was asked in the excel file
+	
+	//loop to inseter every user that was asked, by the form, in the excel file
 	foreach($users as $user){
+		
 		//creating mold array to fill in
 		foreach($quiz_headers as $quiz_header){
 			$base_quiz[$quiz_header->id]="NULL";
@@ -1528,22 +1543,27 @@ function block_progress_download_excel($courseid,$coursename, $users){
 			$base_assign[$assign_header->id]=array("status"=>"NULL", "grade"=>"NULL");
 		}
 		$col=0;
+		
 		//writing the name
 		$name=$user->firstname." ".$user->lastname;
 		$myxls->write_string( $row, $col,  $name);
 		$col++;
+		
 		//getting quizzes and assigns
 		$quizzes = $DB->get_records_sql($sql_quiz, array('courseid'=> $courseid, 'userid'=>$user->id));
 		$assigns = $DB->get_records_sql($sql_assign, array('courseid'=> $courseid, 'userid'=>$user->id));
+		
 		//putting quizzes in the mold array
 		foreach($quizzes as $quiz) {
 			$base_quiz[$quiz->quizid]=$quiz->grade;
 		}
+		
 		//putting quizzes in the excel file
 		foreach($base_quiz as $input){
 			$myxls->write_string($row, $col, $input);
 			$col++;
 		}
+		
 		//putting assigns in the mold array
 		foreach($assigns as $assign){
 			if(!is_null($assign->grade)){
@@ -1552,6 +1572,7 @@ function block_progress_download_excel($courseid,$coursename, $users){
 				$base_assign[$assign->assignid]=array("status"=>$assign->status, "grade"=>"NULL");
 			}
 		}
+		
 		//putting assigns in the excel file
 		foreach($base_assign as $input){
 			$myxls->write_string($row, $col, $input["status"]);
@@ -1569,24 +1590,22 @@ function block_progress_csv_example(){
 	$filename = get_string('csvexample', 'block_progress');
 	
 	$downloadfilename = clean_filename ( "$filename.xls" );
+	
 	// Creating a workbook
 	$workbook = new MoodleExcelWorkbook ( "-" );
+	
 	// Sending HTTP headers
 	$workbook->send ( $downloadfilename );
+	
 	// Adding the worksheet
 	$myxls = $workbook->add_worksheet ( $filename );
 	
-	$rut= get_string('rut', 'block_progress');
-	$room= get_string('room', 'block_progress');
-	$testtime= get_string('testtime', 'block_progress');
-	$testname= get_string('testname', 'block_progress');
-	$period= get_string('period', 'block_progress');
-	
-	$myxls ->write_string(0,0, $rut);
-	$myxls ->write_string(0,1, $testtime);
-	$myxls ->write_string(0,2, $room);
-	$myxls ->write_string(0,3, $testname);
-	$myxls ->write_string(0,4, $period);
+	// Writes header in example excel of the csv	
+	$myxls ->write_string(0,0, get_string('rut', 'block_progress'));
+	$myxls ->write_string(0,1, get_string('testtime', 'block_progress'));
+	$myxls ->write_string(0,2, get_string('room', 'block_progress'));
+	$myxls ->write_string(0,3, get_string('testname', 'block_progress'));
+	$myxls ->write_string(0,4, get_string('period', 'block_progress'));
 	
 	$workbook->close ();
 	

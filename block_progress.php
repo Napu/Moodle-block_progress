@@ -264,7 +264,7 @@ class block_progress extends block_base {
             $blockinstancesonpage = array($this->instance->id);
             }
             // Presencial test date display
-            $this->content->text.= block_progress_get_dates($COURSE-> id);
+            $this->content->text.= block_progress_get_dates($COURSE-> id,  $this->context);
             
             // Allow teachers to access the overview page.
             if (has_capability('block/progress:overview', $this->context)) {
@@ -275,6 +275,7 @@ class block_progress extends block_base {
                 $testurl = new moodle_url('/blocks/progress/upload.php', $parameters);
                 $testlabel = get_string('adddate', 'block_progress');
             	$testoptions = array('class' => 'testButton');
+            	//only allows managers to add dates
             	if (has_capability('block/progress:adddate', $this->context)){
             	$this->content->text .= $OUTPUT->single_button($testurl, $testlabel, 'post', $testoptions);
             	}
