@@ -125,7 +125,6 @@ if ($mform->is_cancelled()) {
 		//Separation
 		$dbinput= explode(";", $datas[$i]);
 		$idnumber = explode("-", $dbinput[0]);
-		
 		// Looking for user id from id number
 		$sql = "
 		SELECT id
@@ -137,7 +136,6 @@ if ($mform->is_cancelled()) {
 		$date = explode("-", $dbinput[1]);
 		$date = $date[2]."-".$date[1]."-".$date[0];
 		$fecha = new DateTime($date);
-		$userid = false;
 		if ($userid == false) {
 			$url_error = new moodle_url('/blocks/progress/upload.php', array('courseid'=>$courseid, 'progressbarid'=>$progressbarid, 'action'=>$action));
 			echo $OUTPUT->heading(get_string('uploaderror', 'block_progress'));
