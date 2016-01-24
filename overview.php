@@ -30,20 +30,22 @@ define('USER_SMALL_CLASS', 20);   // Below this is considered small.
 define('USER_LARGE_CLASS', 200);  // Above this is considered large.
 define('DEFAULT_PAGE_SIZE', 20);
 define('SHOW_ALL_PAGE_SIZE', 5000);
+
 // Gather form data.
 $id       = required_param('progressbarid', PARAM_INT);
 $courseid = required_param('courseid', PARAM_INT);
 $page     = optional_param('page', 0, PARAM_INT); // Which page to show.
 $perpage  = optional_param('perpage', DEFAULT_PAGE_SIZE, PARAM_INT); // How many per page.
 $excel = optional_param('excel', 0, PARAM_INT); 
+
 // Determine course and context.
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 $context = block_progress_get_course_context($courseid);
+
 // Get specific block config and context.
 $progressblock = $DB->get_record('block_instances', array('id' => $id), '*', MUST_EXIST);
 $progressconfig = unserialize(base64_decode($progressblock->configdata));
 $progressblockcontext = block_progress_get_block_context($id);
-
 
 // Set up page parameters.
 $PAGE->set_course($course);
@@ -68,8 +70,6 @@ $PAGE->set_pagelayout('standard');
 require_login($course, false);
 require_capability('block/progress:overview', $progressblockcontext);
 
-
-
 // Get the modules to check progress on.
 $modules = block_progress_modules_in_use($course->id);
 if (empty($modules)) {
@@ -93,6 +93,7 @@ if (empty($events)) {
     die();
 }
 $numevents = count($events);
+
 // Determine if a role has been selected.
 $sql = "SELECT DISTINCT r.id, r.name
           FROM {role} r, {role_assignments} a
@@ -127,15 +128,15 @@ foreach ($roles as $role) {
 	$rolestodisplay[$role->id] = $role->localname;
 }
 
-
 // Apply group restrictions.
 $params = array();
 $groupjoin = '';
-$groupselected = groups_get_course_group($course);
+$groupselected = groups_get_course_group($course, true);
 if ($groupselected && $groupselected != 0) {
     $groupjoin = 'JOIN {groups_members} g ON (g.groupid = :groupselected AND g.userid = u.id)';
     $params['groupselected'] = $groupselected;
 }
+
 // Get the list of users enrolled in the course.
 $picturefields = user_picture::fields('u');
 $sql = "SELECT DISTINCT $picturefields, COALESCE(l.timeaccess, 0) AS lastonlinetime
@@ -172,7 +173,7 @@ if (!empty($groups)) {
 	groups_print_course_menu($course, $PAGE->url);
 }
 
-
+// Output role selector.
 echo '&nbsp;'.get_string('role');
 echo $OUTPUT->single_select($PAGE->url, 'role', $rolestodisplay, $roleselected);
 echo $OUTPUT->container_end();
@@ -182,6 +183,7 @@ $formattributes = array('action' => $CFG->wwwroot.'/user/action_redir.php', 'met
 echo html_writer::start_tag('form', $formattributes);
 echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()));
 echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'returnto', 'value' => s($PAGE->url->out(false))));
+
 // Setup submissions table.
 $table = new flexible_table('mod-block-progress-overview');
 $table->pagesize($perpage, $numberofusers);
@@ -214,6 +216,7 @@ if ($paged) {
 }
 $table->define_baseurl($PAGE->url);
 $table->setup();
+
 // Sort the users (except by progress).
 $sort = $table->get_sql_sort();
 $sortbyprogress = strncmp($sort, 'progress', 8) == 0;
@@ -226,6 +229,7 @@ if (!$sortbyprogress) {
 // Get range of students for page.
 $startuser = $page * $perpage;
 $enduser = ($startuser + $perpage > $numberofusers) ? $numberofusers : ($startuser + $perpage);
+
 // Build table of progress bars as they are marked.
 $rows = array();
 for ($i = $startuser; $i < $enduser; $i++) {
@@ -265,6 +269,7 @@ for ($i = $startuser; $i < $enduser; $i++) {
         'progress' => $progress
     );
 }
+
 // Build the table content and output.
 if ($sortbyprogress) {
     usort($rows, 'block_progress_compare_rows');
@@ -285,6 +290,7 @@ if ($paged) {
     $perpageurl->param('perpage', DEFAULT_PAGE_SIZE);
     echo $OUTPUT->container(html_writer::link($perpageurl, get_string('showperpage', '', DEFAULT_PAGE_SIZE)), array(), 'showall');
 }
+
 // Output messaging controls.
 if ($CFG->enablenotes || $CFG->messaging) {
     echo html_writer::start_tag('div', array('class' => 'buttons'));
@@ -308,14 +314,17 @@ if ($CFG->enablenotes || $CFG->messaging) {
     echo html_writer::end_tag('div');
     echo html_writer::end_tag('form');
 }
+
 // Organise access to JS for messaging.
 $module = array('name' => 'core_user', 'fullpath' => '/user/module.js');
 $PAGE->requires->js_init_call('M.core_user.init_participation', null, false, $module);
+
 // Organise access to JS for progress bars.
 $jsmodule = array('name' => 'block_progress', 'fullpath' => '/blocks/progress/module.js');
 $arguments = array(array($progressblock->id), $userids);
 $PAGE->requires->js_init_call('M.block_progress.init', $arguments, false, $jsmodule);
 echo $OUTPUT->container_end();
+
 //Button that downloads the excel file with the selected users report
 $excelparameters=array('progressbarid' => $id, 'courseid'=>$courseid, 'page'=>$page, 'perpage'=>$perpage, 'excel'=>1);
 $excelurl = new moodle_url('/blocks/progress/overview.php', $excelparameters);

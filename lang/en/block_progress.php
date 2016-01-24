@@ -226,4 +226,4 @@ $string['rut'] = "Id Numer";
 $string['testtime'] = "Evaluation date";
 $string['room'] = "Room";
 $string['testname'] = "Evaluation name";
-$string['module'] = "Module";
+$string['period'] = "Period";

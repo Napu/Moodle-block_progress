@@ -1522,10 +1522,10 @@ function block_progress_download_excel($courseid,$coursename, $users){
 	foreach($users as $user){
 		//creating mold array to fill in
 		foreach($quiz_headers as $quiz_header){
-			$base_quiz[$quiz_header->id]="Nulo";
+			$base_quiz[$quiz_header->id]="NULL";
 		}
 		foreach($assign_headers as $assign_header){
-			$base_assign[$assign_header->id]=array("status"=>"Nulo", "grade"=>"Nulo");
+			$base_assign[$assign_header->id]=array("status"=>"NULL", "grade"=>"NULL");
 		}
 		$col=0;
 		//writing the name
@@ -1549,7 +1549,7 @@ function block_progress_download_excel($courseid,$coursename, $users){
 			if(!is_null($assign->grade)){
 			$base_assign[$assign->assignid]=array("status"=>$assign->status, "grade"=>$assign->grade);
 			}else{
-				$base_assign[$assign->assignid]=array("status"=>$assign->status, "grade"=>"NULO");
+				$base_assign[$assign->assignid]=array("status"=>$assign->status, "grade"=>"NULL");
 			}
 		}
 		//putting assigns in the excel file
@@ -1576,17 +1576,17 @@ function block_progress_csv_example(){
 	// Adding the worksheet
 	$myxls = $workbook->add_worksheet ( $filename );
 	
-	$rut= get_string('rut', 'bolck_progress');
-	$room= get_string('room', 'bolck_progress');
-	$testtime= get_string('testtime', 'bolck_progress');
-	$testname= get_string('testname', 'bolck_progress');
-	$module= get_string('module', 'bolck_progress');
+	$rut= get_string('rut', 'block_progress');
+	$room= get_string('room', 'block_progress');
+	$testtime= get_string('testtime', 'block_progress');
+	$testname= get_string('testname', 'block_progress');
+	$period= get_string('period', 'block_progress');
 	
 	$myxls ->write_string(0,0, $rut);
 	$myxls ->write_string(0,1, $testtime);
 	$myxls ->write_string(0,2, $room);
 	$myxls ->write_string(0,3, $testname);
-	$myxls ->write_string(0,4, $module);
+	$myxls ->write_string(0,4, $period);
 	
 	$workbook->close ();
 	
