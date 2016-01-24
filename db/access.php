@@ -71,4 +71,3 @@ $capabilities = array (
 		)
     )
 );
-//TODO Crear capability para coordinador solamente

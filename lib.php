@@ -1450,6 +1450,7 @@ function block_progress_get_dates($courseid){
 	if(isset($userdate->test_name)){
 	return $userdate->test_name."<br>".date("d-m-Y",$userdate->test_time)."<br>".$userdate->modulo." ". $userdate->room;
 	}else{
+		// TODO: create lang fot this error
 		return " No hay pruebas para mostrar";
 	}
 
@@ -1564,20 +1565,28 @@ function block_progress_download_excel($courseid,$coursename, $users){
 	$workbook->close ();
 }
 function block_progress_csv_example(){
+	
 	$filename = get_string('csvexample', 'block_progress');
+	
 	$downloadfilename = clean_filename ( "$filename.xls" );
 	// Creating a workbook
 	$workbook = new MoodleExcelWorkbook ( "-" );
 	// Sending HTTP headers
 	$workbook->send ( $downloadfilename );
 	// Adding the worksheet
-	$myxls = $workbook->add_worksheet ( "csvexample" );
+	$myxls = $workbook->add_worksheet ( $filename );
 	
-	$myxls ->write_string(0,0, get_string('rut', 'bolck_progress'));
-	$myxls ->write_string(0,1, get_string('testtime', 'bolck_progress'));
-	$myxls ->write_string(0,2, get_string('room', 'bolck_progress'));
-	$myxls ->write_string(0,3, get_string('testname', 'bolck_progress'));
-	$myxls ->write_string(0,4, get_string('module', 'bolck_progress'));
+	$rut= get_string('rut', 'bolck_progress');
+	$room= get_string('room', 'bolck_progress');
+	$testtime= get_string('testtime', 'bolck_progress');
+	$testname= get_string('testname', 'bolck_progress');
+	$module= get_string('module', 'bolck_progress');
+	
+	$myxls ->write_string(0,0, $rut);
+	$myxls ->write_string(0,1, $testtime);
+	$myxls ->write_string(0,2, $room);
+	$myxls ->write_string(0,3, $testname);
+	$myxls ->write_string(0,4, $module);
 	
 	$workbook->close ();
 	

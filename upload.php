@@ -92,7 +92,13 @@ if ($mform->is_cancelled()) {
 	
 	//Getting data from csv file
 	$data = $mform->get_file_content('csvdates');
-	
+	if($data == false){
+		$url_error = new moodle_url('/blocks/progress/upload.php', array('courseid'=>$courseid, 'progressbarid'=>$progressbarid, 'action'=>$action));
+		echo $OUTPUT->heading(get_string('uploaderror', 'block_progress'));
+		$label = 'Back';
+		echo $OUTPUT->single_button($url_error, $label, 'post');
+		echo $OUTPUT->footer();
+	}
 	//Separating data in array by row in csv
 	$datas = explode("\n", $data);
 	
@@ -119,18 +125,27 @@ if ($mform->is_cancelled()) {
 		//Separation
 		$dbinput= explode(";", $datas[$i]);
 		$idnumber = explode("-", $dbinput[0]);
+		
 		// Looking for user id from id number
 		$sql = "
 		SELECT id
 		FROM {user}
-		WHERE idnumber = :idnumber";
+		WHERE idnumber = :idnumber
+		LIMIT 1";
 		$userid = $DB->get_record_sql($sql, array('idnumber'=>(int)$idnumber[0]));
-		//var_dump($userid);die();
 		// date transformation to unix timestamp
 		$date = explode("-", $dbinput[1]);
 		$date = $date[2]."-".$date[1]."-".$date[0];
 		$fecha = new DateTime($date);
-		if ($userid = false) {
+		$userid = false;
+		if ($userid == false) {
+			$url_error = new moodle_url('/blocks/progress/upload.php', array('courseid'=>$courseid, 'progressbarid'=>$progressbarid, 'action'=>$action));
+			echo $OUTPUT->heading(get_string('uploaderror', 'block_progress'));
+			$label = 'Back';
+			echo $OUTPUT->single_button($url_error, $label, 'post');
+			echo $OUTPUT->footer();
+			die();
+		}else{
 			// Filling in object
 			$dataobject->userid = $userid->id;
 			$dataobject->test_time = $fecha->getTimestamp ();
@@ -141,13 +156,6 @@ if ($mform->is_cancelled()) {
 			$counter ++;
 			// data base completition
 			$DB->insert_record ( 'block_progress', $dataobject );
-		}else{
-			$url_error = new moodle_url('/blocks/progress/upload.php', array('courseid'=>$courseid, 'progressbarid'=>$progressbarid, 'action'=>$action));
-			echo $OUTPUT->heading(get_string('uploaderror', 'block_progress'));
-			$label = 'Back';
-			echo $OUTPUT->single_button($url_error, $label, 'post');
-			echo $OUTPUT->footer();
-			die();
 		}
 	}
 	
