@@ -55,6 +55,7 @@ $PAGE->set_course($course);
 $PAGE->set_url(
     '/blocks/progress/upload.php',
 array(
+	'progressbarid'	=> $progressbarid,
 	'courseid' => $courseid
 )
 );

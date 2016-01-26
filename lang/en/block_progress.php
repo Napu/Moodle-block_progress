@@ -229,3 +229,5 @@ $string['testname'] = "Evaluation name";
 $string['period'] = "Period";
 $string['notesttoshow'] = "No test to show";
 $string['uploadtestdate'] = "Upload test dates";
+$string['testone'] = "Test 1";
+$string['auditory'] = "Auditory";

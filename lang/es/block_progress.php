@@ -228,3 +228,5 @@ $string['room'] = "Sala";
 $string['testname'] = "Nombre de la evaluación";
 $string['notesttoshow'] = "No hay prueba para mostrar";
 $string['uploadtestdate'] = "Subir evaluaciones";
+$string['testone'] = "Prueba 1";
+$string['auditory'] = "Auditorio";
