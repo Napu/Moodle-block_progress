@@ -1609,7 +1609,7 @@ function block_progress_csv_example(){
 	$myxls ->write_string(1,0, "12345678-9");
 	$myxls ->write_string(1,1, "DD-MM-YY");
 	$myxls ->write_string(1,2, "101-A");
-	$myxls ->write_string(1,3, "Prueba 1");
+	$myxls ->write_string(1,3, get_string('testone', 'block_progress'));
 	$myxls ->write_string(1,4, "M3-M4");
 	$myxls ->write_string(2,0, "12345678");
 	$myxls ->write_string(2,1, "DD-MM-YY");
