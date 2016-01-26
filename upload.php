@@ -53,7 +53,7 @@ $progressblockcontext = block_progress_get_block_context($progressbarid);
 // Set up page parameters.
 $PAGE->set_course($course);
 $PAGE->set_url(
-    '/blocks/progress/test_form.php',
+    '/blocks/progress/upload.php',
 array(
 	'courseid' => $courseid
 )

@@ -1606,7 +1606,16 @@ function block_progress_csv_example(){
 	$myxls ->write_string(0,2, get_string('room', 'block_progress'));
 	$myxls ->write_string(0,3, get_string('testname', 'block_progress'));
 	$myxls ->write_string(0,4, get_string('period', 'block_progress'));
-	
+	$myxls ->write_string(1,0, "12345678-9");
+	$myxls ->write_string(1,1, "01-01-2016");
+	$myxls ->write_string(1,2, "101-A");
+	$myxls ->write_string(1,3, "Prueba 1");
+	$myxls ->write_string(1,4, "M3-M4");
+	$myxls ->write_string(2,0, "12345678");
+	$myxls ->write_string(2,1, "01-01-2016");
+	$myxls ->write_string(2,2, "Auditorio");
+	$myxls ->write_string(2,3, "Prueba 1");
+	$myxls ->write_string(2,4, "L1");
 	$workbook->close ();
 	
 }
